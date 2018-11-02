@@ -6,11 +6,11 @@ import SaveIcon from '@material-ui/icons/Save';
 import TextField from '@material-ui/core/TextField';
 
 
-class AddCustomer extends Component {
+class AddTraining extends Component {
     constructor(props) {
         super(props);
         this.addModal = React.createRef();
-        this.state = { firstname: '', lastname: '', streetaddress: '', postcode: '', city: '', email: '', phone: '' };
+        this.state = { date: '', duration: '', activity: '', customer: '' };
     }
 
     handleChange = (event) => {
@@ -40,7 +40,7 @@ class AddCustomer extends Component {
 
         return (
             <div>
-                <Button style={{ margin: 10 }} variant="contained" color="primary" onClick={() => this.addModal.current.show()}><AddIcon /> New Customer </Button>
+                <Button style={{ margin: 10 }} variant="contained" color="primary" onClick={() => this.addModal.current.show()}><AddIcon /> New Training </Button>
                 <SkyLight hideOnOverlayClicked dialogStyles={addDialog} ref={this.addModal} title="Add a Customer">
                     <TextField id="firstname" label="Firstname" placeholder="Firstname" margin="normal" name="firstname"
                         onChange={this.handleChange} value={this.state.firstname} /><br></br>
@@ -63,4 +63,4 @@ class AddCustomer extends Component {
     }
 }
 
-export default AddCustomer;
+export default AddTraining;
