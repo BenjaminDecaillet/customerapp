@@ -9,6 +9,7 @@
     "luxon": "^1.4.5",
     "moment": "^2.22.2",
     "react": "^16.6.0",
+    "react-big-calendar": "^0.20.1",
     "react-confirm-alert": "^2.0.6",
     "react-datepicker": "^1.8.0",
     "react-dom": "^16.6.0",

@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 import SkyLight from 'react-skylight';
-import { BrowserRouter as Router, Route, Link} from "react-router-dom";
 import Snackbar from '@material-ui/core/Snackbar';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';

@@ -1,4 +1,4 @@
-import React, { Component, Text } from 'react';
+import React, { Component } from 'react';
 import SkyLight from 'react-skylight';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
@@ -103,7 +103,7 @@ class Customertraininglist extends Component {
 
         return (
             <div>
-                <Button style={{ margin: 2 }} size="small" variant="contained" color="primary" onClick={this.showDialog}> Trainings </Button>
+                <Button style={{ margin: 2 }} size="medium" variant="contained" color="primary" onClick={this.showDialog}> Trainings </Button>
                 <SkyLight hideOnOverlayClicked dialogStyles={listDialog} ref={this.listDialog} title="Trainings of Customer">
                     <IntlProvider locale={navigator.language}>
                         <ReactTable data={this.state.trainings} columns={columns} filterable={true} defaultPageSize={5} />

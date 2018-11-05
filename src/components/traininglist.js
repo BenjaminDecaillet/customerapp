@@ -1,4 +1,4 @@
-import React, { Component, Text } from 'react';
+import React, { Component } from 'react';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 import Snackbar from '@material-ui/core/Snackbar';
@@ -7,7 +7,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import Tooltip from '@material-ui/core/Tooltip';
 import SaveIcon from '@material-ui/icons/Save';
 import AddTraining from './AddTraining';
-import { injectIntl,IntlProvider,FormattedRelative, FormattedDate} from 'react-intl';
+import { injectIntl,IntlProvider,FormattedRelative} from 'react-intl';
 
 const Date = injectIntl(({date, intl}) => (
     <span>{intl.formatDate(date)} (<FormattedRelative value={date}/>)</span>
