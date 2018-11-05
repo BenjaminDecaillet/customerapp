@@ -8,17 +8,18 @@ import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Tooltip from '@material-ui/core/Tooltip';
 import SaveIcon from '@material-ui/icons/Save';
-import Button from '@material-ui/core/Button';
 import AddCustomer from './AddCustomer';
-import CustomerTrainings from './CustomerTrainings';
-
+import CustomerTrainingList from './Customertraininglist';
+import AddTraining from './AddTraining';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css'
 
 class Customerlist extends Component {
 
     constructor(props) {
         super(props);
         this.trainingsDialog = React.createRef();
-        this.state = { customers: [], showSnackbar: false , trainings: []};
+        this.state = { customers: [], showSnackbar: false , trainings: [], customerLink: '', trainingsLink: ''};
     }
 
     componentDidMount() {
@@ -33,11 +34,30 @@ class Customerlist extends Component {
             })
     }
 
+    confirmDeleteCustomer = (link) => {
+        confirmAlert({
+          title: 'Delete Customer',
+          message: 'Are you sure you want to delete the customer?',
+          buttons: [
+            {
+              label: 'Yes',
+              onClick: () => this.deleteCustomer(link)
+            },
+            {
+              label: 'No',
+              onClick: () => alert('Operation cancelled')
+            }
+          ]
+        })
+      };
+
     listCustomers = () => {
         fetch('https://customerrest.herokuapp.com/api/customers')
             .then(response => response.json())
             .then(responseData => {
-                this.setState({ customers: responseData.content })
+                this.setState({ customers: responseData.content },function() {
+                        this.setState({ trainingsLink: this.state.customers[0].links[2].href, customerLink: this.state.customers[0].links[0].href})
+                    })
             })
     }
 
@@ -50,6 +70,15 @@ class Customerlist extends Component {
             })
             .then(response => {
                 this.listCustomers();
+            })
+    }
+
+    saveTraining = (training) => {
+        fetch('https://customerrest.herokuapp.com/api/trainings',
+            {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(training)
             })
     }
 
@@ -88,7 +117,8 @@ class Customerlist extends Component {
     }
 
     showTrainings = (link) => {
-        fetch(link)
+        this.setState({ trainingsLink: link[2].href, customerLink: link[0].href})
+        fetch(link[2].href)
             .then(response => response.json())
             .then(responseData => {
                 this.setState({ trainings: responseData.content })
@@ -98,7 +128,8 @@ class Customerlist extends Component {
 
     render() {
 
-        const columns = [{
+        const columns = [
+            {
             Header: 'Firstname',
             accessor: 'firstname',
             Cell: this.renderEditable
@@ -130,11 +161,17 @@ class Customerlist extends Component {
             Header: 'Trainings',
             filterable: false,
             sortable: false,
-            accessor: 'links[2].href',
-            Cell: ({ value }) => (
-                <Button variant="outlined" onClick={() => this.showTrainings(value)} aria-label="Customers" style={{ margin: 4 }}>
-                    Trainings
-                </Button>
+            accessor: 'links',
+            Cell: ({ row, value }) => (
+                <CustomerTrainingList trainings={this.state.trainings} trainingsLink={this.state.trainingsLink}/>
+            )
+        }, {
+            Header: 'Trainings',
+            filterable: false,
+            sortable: false,
+            accessor: 'links[0].href',
+            Cell: ({ row, value }) => (
+                <AddTraining saveTraining={this.saveTraining} customerLink={value}/>
             )
         }, {
             Header: '',
@@ -155,7 +192,7 @@ class Customerlist extends Component {
             accessor: 'links[0].href',
             Cell: ({ value }) => (
                 <Tooltip title='Delete' placement='right'>
-                    <IconButton onClick={() => this.deleteCustomer(value)} aria-label='delete'>
+                    <IconButton onClick={() => this.confirmDeleteCustomer(value)} aria-label='delete'>
                         <DeleteIcon />
                     </IconButton>
                 </Tooltip>
@@ -169,12 +206,12 @@ class Customerlist extends Component {
 
         return (
             <div>
-                <AddCustomer saveCustomer={this.saveCustomer} />
-                <ReactTable style={{width:'100%'}} data={this.state.customers} columns={columns} filterable={true} defaultPageSize={10} />
-                <Snackbar message='Customer deleted' open={this.state.showSnackbar} onClose={this.handleClose} autoHideDuration={3000} />
-                <SkyLight hideOnOverlayClicked dialogStyles={trainingsDialog} ref={this.trainingsDialog} title="Trainings">
-                    <CustomerTrainings trainings={this.state.trainings}/>
-                </SkyLight>
+                    <AddCustomer saveCustomer={this.saveCustomer} />
+                    <ReactTable style={{width:'100%'}} data={this.state.customers} columns={columns} filterable={true} defaultPageSize={10} />
+                    <Snackbar message='Customer deleted' open={this.state.showSnackbar} onClose={this.handleClose} autoHideDuration={3000} />
+                    <SkyLight hideOnOverlayClicked dialogStyles={trainingsDialog} ref={this.trainingsDialog} title="Trainings">
+                        <CustomerTrainingList trainings={this.state.trainings} trainingsLink={this.state.trainingsLink}/>
+                    </SkyLight>
             </div>
         );
     }

@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import SkyLight from 'react-skylight';
+import DatePicker from "react-datepicker";
 import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
 import SaveIcon from '@material-ui/icons/Save';
 import TextField from '@material-ui/core/TextField';
 
+import "react-datepicker/dist/react-datepicker.css";
 
 class AddTraining extends Component {
     constructor(props) {
@@ -13,50 +15,57 @@ class AddTraining extends Component {
         this.state = { date: '', duration: '', activity: '', customer: '' };
     }
 
+    componentDidMount() {
+        this.setState({customer : this.props.links})
+    }
+
     handleChange = (event) => {
+        this.getCustomer();
         this.setState({ [event.target.name]: event.target.value });
     }
-    
-    saveCustomer = () => {
+
+    setDate = (date) => {
+        this.getCustomer();
+        this.setState({
+          date: date
+        });
+      }
+
+    saveTraining = () => {
         const customer = {
-            firstname:      this.state.firstname,
-            lastname:       this.state.lastname,
-            streetaddress:  this.state.streetaddress,
-            postcode:       this.state.postcode,
-            city:           this.state.city,
-            email:          this.state.email,
-            phone:          this.state.phone
+            date: this.state.date,
+            duration: this.state.duration,
+            activity: this.state.activity,
+            customer: this.state.customer
         }
-        this.props.saveCustomer(customer);
+        this.props.saveTraining(customer);
         this.addModal.current.hide();
     };
+
+    getCustomer = () => {
+        this.setState({ customer: this.props.customerLink })
+    }
 
     render() {
 
         const addDialog = {
-            width :'40%',
+            width: '40%',
             marginTop: '-300px',
         }
 
         return (
             <div>
-                <Button style={{ margin: 10 }} variant="contained" color="primary" onClick={() => this.addModal.current.show()}><AddIcon /> New Training </Button>
-                <SkyLight hideOnOverlayClicked dialogStyles={addDialog} ref={this.addModal} title="Add a Customer">
-                    <TextField id="firstname" label="Firstname" placeholder="Firstname" margin="normal" name="firstname"
-                        onChange={this.handleChange} value={this.state.firstname} /><br></br>
-                    <TextField id="lastname" label="Lastname" placeholder="Lastname" margin="normal" name="lastname"
-                        onChange={this.handleChange} value={this.state.lastname} /><br></br>
-                    <TextField id="streetaddress" label="Streetaddress" placeholder="Streetaddress" margin="normal" name="streetaddress"
-                        onChange={this.handleChange} value={this.state.streetaddress} /><br></br>
-                    <TextField id="postcode" label="Postcode" placeholder="Postcode" margin="normal" name="postcode"
-                        onChange={this.handleChange} value={this.state.postcode} /><br></br>
-                    <TextField id="city" label="City" placeholder="City" margin="normal" name="city"
-                        onChange={this.handleChange} value={this.state.city} /><br></br>
-                    <TextField id="email" label="Email" placeholder="Email" margin="normal" name="email"
-                        onChange={this.handleChange} value={this.state.email} /><br></br>
-                    <TextField id="phone" label="Phone" placeholder="Phone" margin="normal" name="phone"
-                        onChange={this.handleChange} value={this.state.phone} /><br></br>
-                        <Button style={{ margin: 10 }} variant="contained" color="secondary" onClick={this.saveCustomer}><SaveIcon /> Save Customer </Button>
+                <Button style={{ margin: 2 }} size="small" variant="contained" color="primary" onClick={() => this.addModal.current.show()}><AddIcon /> New Training </Button>
+                <SkyLight hideOnOverlayClicked dialogStyles={addDialog} ref={this.addModal} title="Add a Training">
+                    <DatePicker name="date"
+                        selected={this.state.date}
+                        onChange={this.setDate}
+                    /><br></br>
+                    <TextField id="duration" label="Duration" placeholder="Duration" margin="normal" name="duration"
+                        onChange={this.handleChange} value={this.state.duration} /><br></br>
+                    <TextField id="activity" label="Activity" placeholder="Activity" margin="normal" name="activity"
+                        onChange={this.handleChange} value={this.state.activity} /><br></br>
+                    <Button style={{ margin: 10 }} variant="contained" color="secondary" onClick={this.saveTraining}><SaveIcon /> Save Training </Button>
                 </SkyLight>
             </div>
         );
